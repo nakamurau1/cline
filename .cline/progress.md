@@ -46,6 +46,9 @@
 ### Active Work
 1. Tool Improvements
    - read_file tool enhancement
+     - LLM context consumption optimization
+     - Large file processing improvement
+     - File reading strategy revision
    - Test coverage expansion
    - Error handling refinement
    - Performance optimization
@@ -82,8 +85,14 @@
 1. Performance Improvements
    - Caching optimization
    - Resource management
+     - Efficient use of LLM context window
+     - Gradual loading of large files
+     - Selective extraction of file content
    - Response time reduction
    - Memory usage optimization
+     - Introduction of streaming processing
+     - Memory consumption optimization
+     - Selection of dynamic processing methods
 
 2. User Experience
    - Enhanced feedback system
