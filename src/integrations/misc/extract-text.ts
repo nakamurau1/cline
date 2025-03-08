@@ -14,6 +14,7 @@ interface FileInfo {
 type ReadingStrategy =
 	| { type: "default" } // デフォルト戦略（閾値に基づく読み取り）
 	| { type: "complete" } // 全体読み込み
+	| { type: "byteRange"; start: number; end?: number } // バイト範囲指定
 
 interface ExtractTextOptions {
 	strategy?: ReadingStrategy
@@ -79,7 +80,31 @@ export async function extractTextFromFile(
 				content = await extractTextFromIPYNB(filePath)
 				break
 			default:
-				if (strategy.type === "complete" || fileSize <= SIZE_THRESHOLD) {
+				if (strategy.type === "byteRange") {
+					// バイト範囲の検証
+					if (strategy.start < 0) {
+						throw new Error("Start position must be non-negative")
+					}
+					if (strategy.end !== undefined && strategy.end < strategy.start) {
+						throw new Error("End position must be greater than or equal to start position")
+					}
+					if (strategy.start >= fileSize) {
+						throw new Error("Start position exceeds file size")
+					}
+
+					const end = strategy.end !== undefined ? Math.min(strategy.end, fileSize) : fileSize
+					const length = end - strategy.start
+
+					const handle = await fs.open(filePath)
+					try {
+						const buffer = new Uint8Array(length)
+						await handle.read({ buffer, position: strategy.start, length })
+						content = new TextDecoder().decode(buffer)
+						isTruncated = false
+					} finally {
+						await handle.close()
+					}
+				} else if (strategy.type === "complete" || fileSize <= SIZE_THRESHOLD) {
 					// Read entire file for complete strategy or small files
 					content = await fs.readFile(filePath, "utf8")
 					isTruncated = false

@@ -122,19 +122,119 @@ describe("extract-text", () => {
 	})
 
 	describe("reading strategies", () => {
-		it("should read entire large file with complete strategy", async () => {
-			const testFilePath = path.join(testDir, "large-complete-file.txt")
-			const largeContent = "This is a large text file. ".repeat(20000) // Create a file larger than 100KB
-			await fs.writeFile(testFilePath, largeContent, "utf8")
+		describe("byte range strategy", () => {
+			it("should read specified byte range of file", async () => {
+				const testFilePath = path.join(testDir, "byte-range-test.txt")
+				const content = "This is a test file for byte range reading."
+				await fs.writeFile(testFilePath, content, "utf8")
 
-			const result = await extractTextFromFile(testFilePath, {
-				strategy: { type: "complete" },
+				const result = await extractTextFromFile(testFilePath, {
+					strategy: { type: "byteRange", start: 5, end: 15 },
+				})
+
+				assert.strictEqual(result.content, content.substring(5, 15))
+				assert.strictEqual(result.isTruncated, false)
+				assert.deepStrictEqual(result.appliedStrategy, { type: "byteRange", start: 5, end: 15 })
 			})
 
-			assert.strictEqual(result.isTruncated, false)
-			assert.strictEqual(result.content, largeContent)
-			assert.deepStrictEqual(result.appliedStrategy, { type: "complete" })
-			assert.strictEqual(result.remainingSize, undefined)
+			it("should read to end when end position is omitted", async () => {
+				const testFilePath = path.join(testDir, "byte-range-to-end-test.txt")
+				const content = "This is a test file for byte range reading."
+				await fs.writeFile(testFilePath, content, "utf8")
+
+				const result = await extractTextFromFile(testFilePath, {
+					strategy: { type: "byteRange", start: 10 },
+				})
+
+				assert.strictEqual(result.content, content.substring(10))
+				assert.strictEqual(result.isTruncated, false)
+			})
+
+			it("should handle end position exceeding file size", async () => {
+				const testFilePath = path.join(testDir, "byte-range-exceed-test.txt")
+				const content = "This is a test file."
+				await fs.writeFile(testFilePath, content, "utf8")
+
+				const result = await extractTextFromFile(testFilePath, {
+					strategy: { type: "byteRange", start: 5, end: 1000 },
+				})
+
+				// 長さの異なるエンコーディングを考慮し、実際の内容を検証
+				const expectedContent = content.substring(5)
+				assert.strictEqual(result.content.length, expectedContent.length)
+				assert.strictEqual(result.content, expectedContent)
+				assert.strictEqual(result.isTruncated, false)
+			})
+
+			it("should throw error for negative start position", async () => {
+				const testFilePath = path.join(testDir, "byte-range-negative-test.txt")
+				const content = "Test file"
+				await fs.writeFile(testFilePath, content, "utf8")
+
+				await assert.rejects(
+					async () => {
+						await extractTextFromFile(testFilePath, {
+							strategy: { type: "byteRange", start: -5 },
+						})
+					},
+					{ message: "Start position must be non-negative" },
+				)
+			})
+
+			it("should throw error when end is less than start", async () => {
+				const testFilePath = path.join(testDir, "byte-range-invalid-range-test.txt")
+				const content = "Test file"
+				await fs.writeFile(testFilePath, content, "utf8")
+
+				await assert.rejects(
+					async () => {
+						await extractTextFromFile(testFilePath, {
+							strategy: { type: "byteRange", start: 10, end: 5 },
+						})
+					},
+					{ message: "End position must be greater than or equal to start position" },
+				)
+			})
+
+			it("should throw error when start position exceeds file size", async () => {
+				const testFilePath = path.join(testDir, "byte-range-exceed-start-test.txt")
+				const content = "Test file"
+				await fs.writeFile(testFilePath, content, "utf8")
+
+				await assert.rejects(
+					async () => {
+						await extractTextFromFile(testFilePath, {
+							strategy: { type: "byteRange", start: 1000 },
+						})
+					},
+					{ message: "Start position exceeds file size" },
+				)
+			})
+		})
+
+		it("should read entire large file with complete strategy", async () => {
+			try {
+				const testFilePath = path.join(testDir, "large-complete-file.txt")
+				const largeContent = "This is a large text file. ".repeat(20000) // Create a file larger than 100KB
+
+				// ファイルを書き込み、書き込みが完了するのを待つ
+				await fs.writeFile(testFilePath, largeContent, "utf8")
+
+				// ファイルが存在することを確認
+				await fs.access(testFilePath)
+
+				const result = await extractTextFromFile(testFilePath, {
+					strategy: { type: "complete" },
+				})
+
+				assert.strictEqual(result.isTruncated, false)
+				assert.strictEqual(result.content, largeContent)
+				assert.deepStrictEqual(result.appliedStrategy, { type: "complete" })
+				assert.strictEqual(result.remainingSize, undefined)
+			} catch (error: any) {
+				console.error("Test error:", error)
+				throw error
+			}
 		})
 
 		it("should use default strategy when no strategy specified", async () => {
