@@ -1971,9 +1971,9 @@ export class Cline {
 									}
 									telemetryService.captureToolUsage(this.taskId, block.name, false, true)
 								}
-								// now execute the tool like normal
-								const content = await extractTextFromFile(absolutePath)
-								pushToolResult(content)
+// now execute the tool like normal
+const result = await extractTextFromFile(absolutePath)
+pushToolResult(result.content)
 
 								break
 							}
@@ -2935,7 +2935,7 @@ export class Cline {
 		}
 
 		/*
-		Seeing out of bounds is fine, it means that the next too call is being built up and ready to add to assistantMessageContent to present. 
+		Seeing out of bounds is fine, it means that the next too call is being built up and ready to add to assistantMessageContent to present.
 		When you see the UI inactive during this, it means that a tool is breaking without presenting any UI. For example the write_to_file tool was breaking when relpath was undefined, and for invalid relpath it never presented UI.
 		*/
 		this.presentAssistantMessageLocked = false // this needs to be placed here, if not then calling this.presentAssistantMessage below would fail (sometimes) since it's locked
