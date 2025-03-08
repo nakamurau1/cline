@@ -5,7 +5,7 @@
 ### Tool Enhancement: read_file
 1. Current Status
    - Tool is functional but has limitations with large files and lacks optimized context utilization
-   - Current implementation is in `src/core/Cline.ts` (tool handling) and `src/integrations/misc/extract-text.ts` (file reading)
+   - Current implementation in `src/core/Cline.ts` (tool handling) and `src/integrations/misc/extract-text.ts` (file reading)
 
 2. Current Implementation Details
    - Supports reading text files, PDF, DOCX, and Jupyter Notebook files
@@ -16,27 +16,27 @@
 
 3. Areas of Focus
    - Implement automatic reading strategy based on file size and type
-   - Improve efficiency for large files
+   - Improve efficiency for large files using file size-based decision making
    - Enhance user experience by providing relevant file content quickly
 
-4. Proposed Solution: Automatic Reading Strategy
+4. Proposed Solution: Size-Based Reading Strategy
 
-   - **Initial Read**: When `read_file` is called, read the file and count lines.
-   - **Line Count Check**:
-     - If lines < 500: Return full file content.
-     - If lines >= 500: Return first 500 lines and file info (path, type, total lines, preview content).
-   - **Automatic Strategy Decision**: Cline automatically determines the best reading strategy based on file type, preview content, and task context.
+   - **Initial Check**: When `read_file` is called, check file size using `fs.stat()`.
+   - **Size-Based Decision**:
+     - If size <= 500KB: Return full file content
+     - If size > 500KB: Read first 500KB and return with file info (path, type, total size)
+   - **Automatic Strategy Decision**: Based on file size and type, determine reading approach:
      - Code files: `strategy="definitions"` (list code definitions)
      - Text files: `strategy="summary"` (generate summary)
      - Config files: `strategy="key"` (extract specific keys)
      - Unknown files: `strategy="full"` (read full content)
-   - **Re-read with Strategy**: Cline re-executes `read_file` with the automatically determined strategy.
+   - **Re-read with Strategy**: Cline re-executes `read_file` with determined strategy
 
 5. Key Considerations
-   - Efficient line counting for large files
+   - Efficient size-based file handling
    - Robust file type detection
    - Accurate strategy selection logic
-   - Clear communication of strategy to the user (implicit, no user choice needed)
+   - Clear size-based thresholds and user feedback
 
 ## Recent Changes
 

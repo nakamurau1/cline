@@ -49,18 +49,19 @@
      - ✓ **Review current implementation details**
      - Current implementation identified in `src/core/Cline.ts` and `src/integrations/misc/extract-text.ts`
      - Limitations documented: reads entire files at once, no LLM context optimization, lacks file type-based strategies
-     - **Next step: Implement automatic reading strategy based on file size and type**
-     - LLM context consumption optimization (addressed by automatic strategy)
+     - **Next step: Implement size-based reading strategy**
+     - Changed approach: Using file size (500KB threshold) instead of line count for more efficient and clearer decision making
+     - LLM context consumption optimization (addressed by size-based strategy)
      - Large file processing improvement (addressed by automatic strategy)
      - File reading strategy revision (replaced with automatic strategy)
    - Implementation plan developed:
-     - Line counting functionality for efficient size detection
+     - Size-based file assessment (`fs.stat()`)
+     - Partial file reading based on size threshold
      - File type detection enhancements
      - Strategy selection logic based on file type
-     - Partial file reading capabilities
-   - Test coverage expansion
+   - Test coverage expansion with size-based test cases
    - Error handling refinement
-   - Performance optimization
+   - Performance benchmarking with various file sizes
 
 2. Documentation Updates
    - Memory bank initialization
