@@ -8,6 +8,7 @@
    - ✓ テストケース実装完了: 通常ファイル読み取り、大ファイル分割読み取り、ファイル情報精度のテストケースを追加し、すべてパス
    - ✓ 閾値を100KBに変更: 大きなファイルの閾値を500KBから100KBに変更
    - ✓ テスト成功: 閾値変更後のテストを実行し、成功を確認
+   - 🚧 **課題**: 大きなファイル (100KB超) の場合、先頭100KBしか読み込まれない。戦略を指定して再度読み取るフローが必要。
 
 2. Implementation Progress
    - ✓ Added `ReadResult` interface (includes file size, type, path info)
@@ -19,16 +20,19 @@
    - ✓ Successfully executed tests after threshold change
 
 3. Current Focus
-   - 機能拡張完了 (read_file error handling)
+   - 機能拡張: `read_file` ツールに読み取り戦略を指定する機能を追加 (Act Modeで実装開始)
+   - エラーハンドリング機能拡張 (read_file error handling)
 
 ## Recent Changes
 - Committed implementation to feature/enhance-read-file branch
 - Verified all existing tests are passing
 - Added test cases for normal-sized file reading, large file partial reading, and file info accuracy
-- Changed large file threshold to 100KB and updated test case.
+- Changed large file threshold to 100KB and updated test case
+- Created detailed design document for read_file enhancement in `.cline/docs/read_file_enhancement_design.md`
 
 ## Next Steps
-- 機能拡張完了 (read_file error handling)
+- 機能拡張実装: `read_file` ツールに読み取り戦略を指定する機能の追加（設計書に基づいて実装）
+- エラーハンドリング機能の拡張完了
 
 ### Current Work
 1. Memory Bank Update
@@ -41,7 +45,8 @@
 - Changed large file threshold to 100KB and updated test case, tests are passing.
 
 ### Next Steps
-- 機能拡張完了 (read_file error handling)
+- 機能拡張実装: `read_file` ツールに読み取り戦略を指定する機能の追加（設計書に基づいて実装）
+- エラーハンドリング機能の拡張完了
 
 ### Future Considerations
 1. Performance

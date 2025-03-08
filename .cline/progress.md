@@ -49,15 +49,14 @@
      - ✓ **Review current implementation details**
      - Current implementation identified in `src/core/Cline.ts` and `src/integrations/misc/extract-text.ts`
      - Limitations documented: reads entire files at once, no LLM context optimization, lacks file type-based strategies
-     - **Next step: Implement size-based reading strategy**
-     - Changed approach: Using file size (500KB threshold) instead of line count for more efficient and clearer decision making
-     - LLM context consumption optimization (addressed by size-based strategy)
-     - Large file processing improvement (addressed by automatic strategy)
-     - File reading strategy revision (replaced with automatic strategy)
      - ✓ **Implement size-based reading strategy**
+     - ✓ Changed approach: Using file size (100KB threshold) instead of line count for more efficient and clearer decision making
+     - ✓ LLM context consumption optimization (addressed by size-based strategy)
+     - ✓ Large file processing improvement (addressed by automatic strategy)
+     - ✓ File reading strategy revision (replaced with automatic strategy)
      - ✓ **Test coverage expansion with size-based test cases**
-     - Added test cases for normal-sized file reading, large file partial reading, and file info accuracy
-     - Test coverage expanded:
+     - ✓ Added test cases for normal-sized file reading, large file partial reading, and file info accuracy
+     - ✓ Test coverage expanded:
        - Normal-sized file reading test
        - Large file partial reading test
        - File information accuracy test
@@ -65,6 +64,11 @@
      - ✓ **All tests passing (108 tests)**
      - ✓ **閾値を100KBに変更**: 大きなファイルの閾値を500KBから100KBに変更
      - ✓ **閾値変更後のテスト成功**: 閾値を100KBに変更後、テストを実行し成功を確認
+     - 🚧 **課題発見**: 大きなファイル (100KB超) の場合、先頭100KBしか読み込まれず、残りの部分を読むための戦略指定フローが未実装
+     - **Next step: Implement reading strategy parameter**
+       - Add capability to specify reading strategy when encountering truncated files
+       - Support multiple strategies: complete file, specific byte ranges, etc.
+       - Update tests to verify strategy selection functionality
      - Performance benchmarking with various file sizes (future consideration)
 
 2. Documentation Updates
