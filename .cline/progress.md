@@ -45,31 +45,24 @@
 
 ### Active Work
 1. Tool Improvements
-   - read_file tool enhancement
-     - ✓ **Review current implementation details**
-     - Current implementation identified in `src/core/Cline.ts` and `src/integrations/misc/extract-text.ts`
-     - Limitations documented: reads entire files at once, no LLM context optimization, lacks file type-based strategies
-     - ✓ **Implement size-based reading strategy**
-     - ✓ Changed approach: Using file size (100KB threshold) instead of line count for more efficient and clearer decision making
-     - ✓ LLM context consumption optimization (addressed by size-based strategy)
-     - ✓ Large file processing improvement (addressed by automatic strategy)
-     - ✓ File reading strategy revision (replaced with automatic strategy)
-     - ✓ **Test coverage expansion with size-based test cases**
-     - ✓ Added test cases for normal-sized file reading, large file partial reading, and file info accuracy
-     - ✓ Test coverage expanded:
-       - Normal-sized file reading test
-       - Large file partial reading test
-       - File information accuracy test
-     - ✓ **Error handling refinement and test case implementation**
-     - ✓ **All tests passing (108 tests)**
-     - ✓ **閾値を100KBに変更**: 大きなファイルの閾値を500KBから100KBに変更
-     - ✓ **閾値変更後のテスト成功**: 閾値を100KBに変更後、テストを実行し成功を確認
-     - 🚧 **課題発見**: 大きなファイル (100KB超) の場合、先頭100KBしか読み込まれず、残りの部分を読むための戦略指定フローが未実装
-     - **Next step: Implement reading strategy parameter**
-       - Add capability to specify reading strategy when encountering truncated files
-       - Support multiple strategies: complete file, specific byte ranges, etc.
-       - Update tests to verify strategy selection functionality
-     - Performance benchmarking with various file sizes (future consideration)
+   - read_file tool enhancement (Phase 1 ✓)
+     - ✓ **基本機能拡張の完了**
+       - ReadingStrategy型とExtractTextOptionsインターフェースの追加
+       - extractTextFromFile関数の拡張実装
+       - デフォルト戦略と完全読み込み戦略の実装
+       - メタデータオプションの実装
+     - ✓ **テスト基盤の改善**
+       - 一時ディレクトリを使用したテストの分離
+       - クリーンアップ処理の改善
+       - 全テストケースが正常に動作
+     - ✓ **テストカバレッジの拡大**
+       - 読み取り戦略のテスト（デフォルト/完全読み込み）
+       - メタデータオプションのテスト
+       - エラーケースのテスト
+     - 🚧 **Phase 2 (進行中)**
+       - バイト範囲読み取り戦略の実装
+       - 行範囲読み取り戦略の実装
+       - パフォーマンス最適化
 
 2. Documentation Updates
    - Memory bank initialization
@@ -79,16 +72,19 @@
 
 ### Completed Features
 1. Tool Improvements
-   - read_file tool enhancement
-     - ✓ **Error handling test cases implementation**
-     - ✓ **Error handling logic implementation and refinement**
-     - ✓ **Full test suite passing (108 tests)**
+   - read_file tool enhancement Phase 1
+     - ✓ 読み取り戦略の基本サポート
+     - ✓ メタデータ機能の追加
+     - ✓ テストインフラの改善
+     - ✓ エラーハンドリングの強化
+     - ✓ 全テストが成功
 
 ### In Progress Features
-1. Testing Infrastructure
-   - Test coverage improvements
-   - Integration test expansion
-   - Performance benchmarking
+1. read_file Tool Enhancement Phase 2
+   - バイト範囲戦略の設計と実装
+   - 行範囲戦略の設計と実装
+   - ストリーミング処理の最適化
+   - パフォーマンステストの追加
 
 ## Future Development
 

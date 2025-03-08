@@ -11,15 +11,30 @@ interface FileInfo {
 	path: string
 }
 
+type ReadingStrategy =
+	| { type: "default" } // デフォルト戦略（閾値に基づく読み取り）
+	| { type: "complete" } // 全体読み込み
+
+interface ExtractTextOptions {
+	strategy?: ReadingStrategy
+	includeMetadata?: boolean
+}
+
 interface ReadResult {
 	content: string
 	fileInfo?: FileInfo
 	isTruncated: boolean
+	appliedStrategy: ReadingStrategy
+	remainingSize?: number
+	metadata?: Record<string, any>
 }
 
 const SIZE_THRESHOLD = 100 * 1024 // 100KB in bytes
 
-export async function extractTextFromFile(filePath: string): Promise<ReadResult> {
+export async function extractTextFromFile(
+	filePath: string,
+	options: ExtractTextOptions = { strategy: { type: "default" } },
+): Promise<ReadResult> {
 	try {
 		try {
 			await fs.access(filePath)
@@ -40,6 +55,9 @@ export async function extractTextFromFile(filePath: string): Promise<ReadResult>
 			type: path.extname(filePath).toLowerCase(),
 			path: filePath,
 		}
+
+		// Set default strategy if not provided
+		const strategy = options.strategy || { type: "default" }
 		const fileExtension = path.extname(filePath).toLowerCase()
 		let content: string
 		let isTruncated = false
@@ -61,8 +79,12 @@ export async function extractTextFromFile(filePath: string): Promise<ReadResult>
 				content = await extractTextFromIPYNB(filePath)
 				break
 			default:
-				if (fileSize > SIZE_THRESHOLD) {
-					// Read only first 500KB for large files
+				if (strategy.type === "complete" || fileSize <= SIZE_THRESHOLD) {
+					// Read entire file for complete strategy or small files
+					content = await fs.readFile(filePath, "utf8")
+					isTruncated = false
+				} else {
+					// Default strategy: Read only first 100KB for large files
 					const handle = await fs.open(filePath)
 					try {
 						const buffer = new Uint8Array(SIZE_THRESHOLD)
@@ -72,8 +94,6 @@ export async function extractTextFromFile(filePath: string): Promise<ReadResult>
 					} finally {
 						await handle.close()
 					}
-				} else {
-					content = await fs.readFile(filePath, "utf8")
 				}
 		}
 
@@ -81,6 +101,15 @@ export async function extractTextFromFile(filePath: string): Promise<ReadResult>
 			content,
 			fileInfo,
 			isTruncated,
+			appliedStrategy: strategy,
+			...(isTruncated && { remainingSize: fileSize - SIZE_THRESHOLD }),
+			...(options.includeMetadata && {
+				metadata: {
+					lastModified: stats.mtime,
+					created: stats.birthtime,
+					permissions: stats.mode,
+				},
+			}),
 		}
 	} catch (error: any) {
 		if (error instanceof Error) {
