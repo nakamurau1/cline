@@ -4,31 +4,30 @@
 
 ### Tool Enhancement: read_file
 1. Current Status
-   - ✓ Basic implementation complete: ReadResult interface added, file size-based reading strategy implemented
-   - Next step: Implement test cases
+   - ✓ 基本実装完了: ReadResultインターフェース追加、ファイルサイズに基づいた読み取り戦略実装
+   - ✓ テストケース実装完了: 通常ファイル読み取り、大ファイル分割読み取り、ファイル情報精度のテストケースを追加し、すべてパス
+   - 次のステップ: エラーハンドリングテストケースの追加、または機能拡張完了
 
 2. Implementation Progress
    - ✓ Added `ReadResult` interface (includes file size, type, path info)
    - ✓ Implemented partial reading for files over 500KB
    - ✓ Updated mentions system and read_file tool
    - ✓ All existing tests passing
+   - ✓ Added test cases for normal-sized file reading, large file partial reading, and file info accuracy
 
 3. Current Focus
-   - Creating test cases in `src/integrations/misc/extract-text.test.ts`
-     - Normal-sized file reading test
-     - Large file partial reading test
-     - File info accuracy test
-     - Error handling test
+   - エラーハンドリングテストケースの追加、または機能拡張完了の判断
 
 ## Recent Changes
 - Committed implementation to feature/enhance-read-file branch
 - Verified all existing tests are passing
+- Added test cases for normal-sized file reading, large file partial reading, and file info accuracy
 
 ## Next Steps
-1. Create new test file
-2. Implement test cases
-3. Run and verify tests
-4. Adjust implementation if needed
+1. エラーハンドリングテストケースの追加、または機能拡張完了の判断
+2. 必要に応じてエラーハンドリングテストケースを実装
+3. テスト実行と検証
+4. 実装の調整 (必要に応じて)
 
 ### Future Considerations
 1. Performance
