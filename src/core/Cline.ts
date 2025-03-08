@@ -1971,9 +1971,9 @@ export class Cline {
 									}
 									telemetryService.captureToolUsage(this.taskId, block.name, false, true)
 								}
-// now execute the tool like normal
-const result = await extractTextFromFile(absolutePath)
-pushToolResult(result.content)
+								// now execute the tool like normal
+								const result = await extractTextFromFile(absolutePath)
+								pushToolResult(result.content)
 
 								break
 							}

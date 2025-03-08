@@ -17,19 +17,19 @@ describe("extract-text", () => {
 			await fs.unlink(testFilePath)
 		})
 
-it("should read a large file partially", async () => {
-  const testFilePath = "large-file.txt"
-  const largeContent = "This is a large text file. ".repeat(20000) // Create a file larger than 100KB
-  await fs.writeFile(testFilePath, largeContent, "utf8")
+		it("should read a large file partially", async () => {
+			const testFilePath = "large-file.txt"
+			const largeContent = "This is a large text file. ".repeat(20000) // Create a file larger than 100KB
+			await fs.writeFile(testFilePath, largeContent, "utf8")
 
-  const result = await extractTextFromFile(testFilePath)
+			const result = await extractTextFromFile(testFilePath)
 
-  assert.strictEqual(result.isTruncated, true)
-  assert.strictEqual(result.content.length, 102400) // 100KB in bytes
-  assert.strictEqual(result.content, largeContent.substring(0, 102400))
+			assert.strictEqual(result.isTruncated, true)
+			assert.strictEqual(result.content.length, 102400) // 100KB in bytes
+			assert.strictEqual(result.content, largeContent.substring(0, 102400))
 
-  await fs.unlink(testFilePath)
-})
+			await fs.unlink(testFilePath)
+		})
 
 		it("should return correct file info", async () => {
 			const testFilePath = "file-info-test.txt"
@@ -54,25 +54,25 @@ it("should read a large file partially", async () => {
 
 			try {
 				await extractTextFromFile(testFilePath)
-				assert.fail("Expected file not found error to be thrown");
+				assert.fail("Expected file not found error to be thrown")
 			} catch (error: any) {
-				assert.strictEqual(error.message, "File not found");
+				assert.strictEqual(error.message, "File not found")
 			}
 		})
 
 		it("should handle file access denied error", async () => {
-			const testFilePath = "permission-denied-file.txt";
-			await fs.writeFile(testFilePath, "test content", "utf8");
-			await fs.chmod(testFilePath, 0o000); // Revoke all permissions
+			const testFilePath = "permission-denied-file.txt"
+			await fs.writeFile(testFilePath, "test content", "utf8")
+			await fs.chmod(testFilePath, 0o000) // Revoke all permissions
 
 			try {
-				await extractTextFromFile(testFilePath);
-				assert.fail("Expected file access denied error to be thrown");
+				await extractTextFromFile(testFilePath)
+				assert.fail("Expected file access denied error to be thrown")
 			} catch (error: any) {
-				assert.match(error.message, /permission-denied-file\.txt/);
+				assert.match(error.message, /permission-denied-file\.txt/)
 			} finally {
-				await fs.chmod(testFilePath, 0o777); // Restore permissions
-				await fs.unlink(testFilePath);
+				await fs.chmod(testFilePath, 0o777) // Restore permissions
+				await fs.unlink(testFilePath)
 			}
 		})
 
@@ -83,7 +83,7 @@ it("should read a large file partially", async () => {
 				await extractTextFromFile(testFilePath)
 				assert.fail("Expected invalid file path error to be thrown")
 			} catch (error: any) {
-				assert.strictEqual(error.message, "File not found"); // For invalid path, access() throws ENOENT
+				assert.strictEqual(error.message, "File not found") // For invalid path, access() throws ENOENT
 			}
 		})
 
@@ -91,17 +91,17 @@ it("should read a large file partially", async () => {
 			const testDirPath = "test-dir"
 			// Check if directory already exists, if not create it
 			try {
-				await fs.access(testDirPath);
+				await fs.access(testDirPath)
 			} catch (error) {
 				// Directory does not exist, create it
-				await fs.mkdir(testDirPath);
+				await fs.mkdir(testDirPath)
 			}
 
 			try {
 				await extractTextFromFile(testDirPath)
 				assert.fail("Expected directory error to be thrown")
 			} catch (error: any) {
-				assert.strictEqual(error.message, 'EISDIR: illegal operation on a directory, read');
+				assert.strictEqual(error.message, "EISDIR: illegal operation on a directory, read")
 			} finally {
 				await fs.rmdir(testDirPath)
 			}

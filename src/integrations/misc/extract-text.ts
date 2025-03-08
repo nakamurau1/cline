@@ -24,12 +24,12 @@ export async function extractTextFromFile(filePath: string): Promise<ReadResult>
 		try {
 			await fs.access(filePath)
 		} catch (accessError: any) {
-			if (accessError.code === 'ENOENT') {
-				throw new Error("File not found");
-			} else if (accessError.code === 'EACCES') {
-				throw new Error("Permission denied");
+			if (accessError.code === "ENOENT") {
+				throw new Error("File not found")
+			} else if (accessError.code === "EACCES") {
+				throw new Error("Permission denied")
 			}
-			throw accessError; // Re-throw other access errors
+			throw accessError // Re-throw other access errors
 		}
 
 		// Get file stats
@@ -81,19 +81,19 @@ export async function extractTextFromFile(filePath: string): Promise<ReadResult>
 			content,
 			fileInfo,
 			isTruncated,
-		};
+		}
 	} catch (error: any) {
 		if (error instanceof Error) {
 			if (error.message === "File not found") {
-				throw error; // Re-throw "File not found" error
+				throw error // Re-throw "File not found" error
 			} else if (error.message === "Permission denied") {
-				throw new Error("Permission denied"); // Replace with custom "Permission denied" error
+				throw new Error("Permission denied") // Replace with custom "Permission denied" error
 			} else if (error.message === "Path is a directory") {
-				throw new Error("Path is a directory"); // Replace with custom "Path is a directory" error
+				throw new Error("Path is a directory") // Replace with custom "Path is a directory" error
 			}
-			throw error; // Re-throw original error message without prefix
+			throw error // Re-throw original error message without prefix
 		}
-		throw new Error("Failed to extract text from file: Unknown error");
+		throw new Error("Failed to extract text from file: Unknown error")
 	}
 }
 
