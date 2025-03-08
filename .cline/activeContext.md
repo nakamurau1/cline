@@ -6,37 +6,39 @@
 1. Current Status
    - ✓ 基本実装完了: ReadResultインターフェース追加、ファイルサイズに基づいた読み取り戦略実装
    - ✓ テストケース実装完了: 通常ファイル読み取り、大ファイル分割読み取り、ファイル情報精度のテストケースを追加し、すべてパス
-   - 次のステップ: エラーハンドリングテストケースの追加、または機能拡張完了
+   - ✓ 閾値を100KBに変更: 大きなファイルの閾値を500KBから100KBに変更
+   - ✓ テスト成功: 閾値変更後のテストを実行し、成功を確認
 
 2. Implementation Progress
    - ✓ Added `ReadResult` interface (includes file size, type, path info)
-   - ✓ Implemented partial reading for files over 500KB
+   - ✓ Implemented partial reading for files over 500KB (閾値変更前に実装)
    - ✓ Updated mentions system and read_file tool
    - ✓ All existing tests passing
    - ✓ Added test cases for normal-sized file reading, large file partial reading, and file info accuracy
+   - ✓ Changed large file threshold from 500KB to 100KB
+   - ✓ Successfully executed tests after threshold change
 
 3. Current Focus
-   - エラーハンドリングテストケースの追加、または機能拡張完了の判断
+   - 機能拡張完了 (read_file error handling)
 
 ## Recent Changes
 - Committed implementation to feature/enhance-read-file branch
 - Verified all existing tests are passing
 - Added test cases for normal-sized file reading, large file partial reading, and file info accuracy
+- Changed large file threshold to 100KB and updated test case.
 
 ## Next Steps
-1. エラーハンドリングテストケースの追加、または機能拡張完了の判断
-2. 必要に応じてエラーハンドリングテストケースを実装
-3. テスト実行と検証
-4. 実装の調整 (必要に応じて)
+- 機能拡張完了 (read_file error handling)
 
 ### Current Work
 1. Memory Bank Update
-   - Updated progress and active context in memory bank to reflect completion of read_file error handling enhancement.
+   - Updated progress and active context in memory bank to reflect completion of read_file error handling enhancement and threshold change.
 
 ### Recent Changes
 - Successfully enhanced read_file tool error handling and added test cases.
 - Committed and pushed changes to the repository.
 - All tests are passing (108 tests).
+- Changed large file threshold to 100KB and updated test case, tests are passing.
 
 ### Next Steps
 - 機能拡張完了 (read_file error handling)

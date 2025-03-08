@@ -17,7 +17,7 @@ interface ReadResult {
 	isTruncated: boolean
 }
 
-const SIZE_THRESHOLD = 500 * 1024 // 500KB in bytes
+const SIZE_THRESHOLD = 100 * 1024 // 100KB in bytes
 
 export async function extractTextFromFile(filePath: string): Promise<ReadResult> {
 	try {

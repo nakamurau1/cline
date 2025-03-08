@@ -17,19 +17,19 @@ describe("extract-text", () => {
 			await fs.unlink(testFilePath)
 		})
 
-		it("should read a large file partially", async () => {
-			const testFilePath = "large-file.txt"
-			const largeContent = "This is a large text file. ".repeat(100000) // Create a file larger than 500KB
-			await fs.writeFile(testFilePath, largeContent, "utf8")
+it("should read a large file partially", async () => {
+  const testFilePath = "large-file.txt"
+  const largeContent = "This is a large text file. ".repeat(20000) // Create a file larger than 100KB
+  await fs.writeFile(testFilePath, largeContent, "utf8")
 
-			const result = await extractTextFromFile(testFilePath)
+  const result = await extractTextFromFile(testFilePath)
 
-			assert.strictEqual(result.isTruncated, true)
-			assert.strictEqual(result.content.length, 512000) // 500KB in bytes
-			assert.strictEqual(result.content, largeContent.substring(0, 512000))
+  assert.strictEqual(result.isTruncated, true)
+  assert.strictEqual(result.content.length, 102400) // 100KB in bytes
+  assert.strictEqual(result.content, largeContent.substring(0, 102400))
 
-			await fs.unlink(testFilePath)
-		})
+  await fs.unlink(testFilePath)
+})
 
 		it("should return correct file info", async () => {
 			const testFilePath = "file-info-test.txt"

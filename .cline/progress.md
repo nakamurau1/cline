@@ -63,6 +63,8 @@
        - File information accuracy test
      - ✓ **Error handling refinement and test case implementation**
      - ✓ **All tests passing (108 tests)**
+     - ✓ **閾値を100KBに変更**: 大きなファイルの閾値を500KBから100KBに変更
+     - ✓ **閾値変更後のテスト成功**: 閾値を100KBに変更後、テストを実行し成功を確認
      - Performance benchmarking with various file sizes (future consideration)
 
 2. Documentation Updates
