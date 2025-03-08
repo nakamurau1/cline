@@ -70,7 +70,7 @@ export async function extractTextFromFile(filePath: string): Promise<ReadResult>
 
     return {
       content,
-      fileInfo: isTruncated ? fileInfo : undefined,
+      fileInfo,
       isTruncated
     }
   } catch (error) {
