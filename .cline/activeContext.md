@@ -4,33 +4,31 @@
 
 ### Tool Enhancement: read_file
 1. Current Status
-   - Tool is functional but needs improvements
-   - Basic file reading capabilities implemented
-   - Auto-approval system integration exists
-   - Error handling in place
+   - Tool is functional but needs improvements (as previously documented)
 
 2. Areas of Focus
-   - Test coverage improvement
-   - Error handling enhancement
-   - Performance optimization
-   - Documentation updates
+   - Implement automatic reading strategy based on file size and type
+   - Improve efficiency for large files
+   - Enhance user experience by providing relevant file content quickly
 
-3. Identified Issues
-   - LLM Context Consumption Problem
-     - Rapid consumption of context window due to reading entire large files
-     - Sending the entire file regardless of what information the user needs
-     - Possibility of exhausting context with a single file read
-   - Performance in large files could be improved
-     - Different information needs based on file type and purpose
-     - Memory usage optimization required
-   - Test coverage could be expanded
-   - Error messages could be more informative
-   - Documentation needs updating
+3. Proposed Solution: Automatic Reading Strategy
+
+   - **Initial Read**: When `read_file` is called, read the file and count lines.
+   - **Line Count Check**:
+     - If lines < 500: Return full file content.
+     - If lines >= 500: Return first 500 lines and file info (path, type, total lines, preview content).
+   - **Automatic Strategy Decision**: Cline automatically determines the best reading strategy based on file type, preview content, and task context.
+     - Code files: `strategy="definitions"` (list code definitions)
+     - Text files: `strategy="summary"` (generate summary)
+     - Config files: `strategy="key"` (extract specific keys)
+     - Unknown files: `strategy="full"` (read full content)
+   - **Re-read with Strategy**: Cline re-executes `read_file` with the automatically determined strategy.
 
 4. Key Considerations
-   - Need for reading strategies based on file type and purpose
-   - How to reflect user intent in file reading
-   - Efficient use of context window
+   - Efficient line counting for large files
+   - Robust file type detection
+   - Accurate strategy selection logic
+   - Clear communication of strategy to the user (implicit, no user choice needed)
 
 ## Recent Changes
 

@@ -46,9 +46,10 @@
 ### Active Work
 1. Tool Improvements
    - read_file tool enhancement
-     - LLM context consumption optimization
-     - Large file processing improvement
-     - File reading strategy revision
+     - **Implement automatic reading strategy based on file size and type**
+     - LLM context consumption optimization (addressed by automatic strategy)
+     - Large file processing improvement (addressed by automatic strategy)
+     - File reading strategy revision (replaced with automatic strategy)
    - Test coverage expansion
    - Error handling refinement
    - Performance optimization
