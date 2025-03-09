@@ -75,6 +75,118 @@ describe("extract-text", () => {
 				assert.strictEqual(error.message, "File not found")
 			}
 		})
+	})
+
+	describe("line range strategy", () => {
+		it("should read specified line range of file", async () => {
+			const testFilePath = path.join(testDir, "line-range-test.txt")
+			const content = `Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10`
+			await fs.writeFile(testFilePath, content, "utf8")
+
+			const result = await extractTextFromFile(testFilePath, {
+				strategy: { type: "lineRange", startLine: 3, endLine: 7 },
+			})
+
+			const expectedContent = `Line 3
+Line 4
+Line 5
+Line 6
+Line 7`
+			assert.strictEqual(result.content, expectedContent)
+			assert.strictEqual(result.isTruncated, false)
+			assert.deepStrictEqual(result.appliedStrategy, { type: "lineRange", startLine: 3, endLine: 7 })
+		})
+
+		it("should read to end when endLine is omitted", async () => {
+			const testFilePath = path.join(testDir, "line-range-to-end-test.txt")
+			const content = `Line 1
+Line 2
+Line 3
+Line 4
+Line 5`
+			await fs.writeFile(testFilePath, content, "utf8")
+
+			const result = await extractTextFromFile(testFilePath, {
+				strategy: { type: "lineRange", startLine: 3 },
+			})
+
+			const expectedContent = `Line 3
+Line 4
+Line 5`
+			assert.strictEqual(result.content, expectedContent)
+			assert.strictEqual(result.isTruncated, false)
+		})
+
+		it("should handle endLine exceeding file lines", async () => {
+			const testFilePath = path.join(testDir, "line-range-exceed-test.txt")
+			const content = `Line 1
+Line 2
+Line 3`
+			await fs.writeFile(testFilePath, content, "utf8")
+
+			const result = await extractTextFromFile(testFilePath, {
+				strategy: { type: "lineRange", startLine: 2, endLine: 10 },
+			})
+
+			const expectedContent = `Line 2
+Line 3`
+			assert.strictEqual(result.content, expectedContent)
+			assert.strictEqual(result.isTruncated, false)
+		})
+
+		it("should throw error for startLine less than 1", async () => {
+			const testFilePath = path.join(testDir, "line-range-negative-start-test.txt")
+			const content = "Test file"
+			await fs.writeFile(testFilePath, content, "utf8")
+
+			await assert.rejects(
+				async () => {
+					await extractTextFromFile(testFilePath, {
+						strategy: { type: "lineRange", startLine: 0 },
+					})
+				},
+				{ message: "Start line must be at least 1" },
+			)
+		})
+
+		it("should throw error when endLine is less than startLine", async () => {
+			const testFilePath = path.join(testDir, "line-range-invalid-range-test.txt")
+			const content = "Test file"
+			await fs.writeFile(testFilePath, content, "utf8")
+
+			await assert.rejects(
+				async () => {
+					await extractTextFromFile(testFilePath, {
+						strategy: { type: "lineRange", startLine: 5, endLine: 3 },
+					})
+				},
+				{ message: "End line must be greater than or equal to start line" },
+			)
+		})
+
+		it("should throw error when startLine exceeds file lines", async () => {
+			const testFilePath = path.join(testDir, "line-range-exceed-start-test.txt")
+			const content = "Test file"
+			await fs.writeFile(testFilePath, content, "utf8")
+
+			await assert.rejects(
+				async () => {
+					await extractTextFromFile(testFilePath, {
+						strategy: { type: "lineRange", startLine: 1000 },
+					})
+				},
+				{ message: "Start line exceeds total lines in file" },
+			)
+		})
 
 		it("should handle file access denied error", async () => {
 			const testFilePath = path.join(testDir, "permission-denied-file.txt")

@@ -15,6 +15,7 @@ type ReadingStrategy =
 	| { type: "default" } // デフォルト戦略（閾値に基づく読み取り）
 	| { type: "complete" } // 全体読み込み
 	| { type: "byteRange"; start: number; end?: number } // バイト範囲指定
+	| { type: "lineRange"; startLine: number; endLine?: number } // 行範囲指定
 
 interface ExtractTextOptions {
 	strategy?: ReadingStrategy
@@ -104,6 +105,25 @@ export async function extractTextFromFile(
 					} finally {
 						await handle.close()
 					}
+				} else if (strategy.type === "lineRange") {
+					// 行範囲の検証
+					if (strategy.startLine < 1) {
+						throw new Error("Start line must be at least 1")
+					}
+					if (strategy.endLine !== undefined && strategy.endLine < strategy.startLine) {
+						throw new Error("End line must be greater than or equal to start line")
+					}
+
+					const lines = (await fs.readFile(filePath, "utf8")).split("\n")
+					const totalLines = lines.length
+
+					if (strategy.startLine > totalLines) {
+						throw new Error("Start line exceeds total lines in file")
+					}
+
+					const endLine = strategy.endLine !== undefined ? Math.min(strategy.endLine, totalLines) : totalLines
+					content = lines.slice(strategy.startLine - 1, endLine).join("\n")
+					isTruncated = false
 				} else if (strategy.type === "complete" || fileSize <= SIZE_THRESHOLD) {
 					// Read entire file for complete strategy or small files
 					content = await fs.readFile(filePath, "utf8")

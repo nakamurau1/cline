@@ -48,7 +48,7 @@ type ReadingStrategy =
   | { type: 'default' }  // デフォルト戦略（閾値に基づく読み取り）
   | { type: 'complete' } // 全体読み込み
   | { type: 'byteRange', start: number, end?: number } // バイト範囲指定
-  | { type: 'lineRange', start: number, end?: number } // 行範囲指定
+  | { type: 'lineRange', startLine: number, endLine?: number } // 行範囲指定
 
 // 関数シグネチャの拡張
 interface ExtractTextOptions {
