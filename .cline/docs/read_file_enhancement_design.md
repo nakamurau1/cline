@@ -72,6 +72,58 @@ async function extractTextFromFile(
 ): Promise<ReadResult>
 ```
 
+### データフロー図
+
+```mermaid
+flowchart TD
+    subgraph Input ["入力"]
+        F[ファイル] --> FS[ファイルサイズ確認]
+        FS --> Strategy[読み取り戦略の決定]
+    end
+
+    subgraph ReadStrategy ["読み取り戦略"]
+        Strategy -->|100KB未満| Default[デフォルト戦略<br/>全体読み込み]
+        Strategy -->|100KB以上| Select[戦略選択]
+
+        Select --> C[完全読み込み戦略]
+        Select --> B[バイト範囲戦略]
+        Select --> L[行範囲戦略]
+    end
+
+    subgraph Processing ["処理"]
+        Default --> P[読み取り処理]
+        C --> P
+        B --> P
+        L --> P
+
+        P --> V[バリデーション]
+        V --> M[メタデータ付加]
+    end
+
+    subgraph Output ["出力"]
+        M --> R[読み取り結果]
+        R --> Content[コンテンツ]
+        R --> Meta[メタデータ]
+        R --> Flag[切り捨てフラグ]
+    end
+
+    subgraph Usage ["AIによる利用"]
+        Content --> AI[AI処理]
+        Meta --> AI
+        Flag --> AI
+
+        AI --> NR{再読み取り必要?}
+        NR -->|Yes| Select
+        NR -->|No| Done[処理完了]
+    end
+
+    style Input fill:#f9f,stroke:#333,stroke-width:2px
+    style ReadStrategy fill:#bbf,stroke:#333,stroke-width:2px
+    style Processing fill:#bfb,stroke:#333,stroke-width:2px
+    style Output fill:#fbb,stroke:#333,stroke-width:2px
+    style Usage fill:#ffb,stroke:#333,stroke-width:2px
+```
+
 ### 実装フロー
 
 1. ファイルの基本情報取得（サイズ、タイプ）
