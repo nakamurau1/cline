@@ -44,104 +44,86 @@
 ## Current Development Focus
 
 ### Active Work
-1. Tool Improvements
-   - read_file tool enhancement (Phase 1 ✓)
-     - ✓ **基本機能拡張の完了**
-       - ReadingStrategy型とExtractTextOptionsインターフェースの追加
-       - extractTextFromFile関数の拡張実装
-       - デフォルト戦略と完全読み込み戦略の実装
-       - メタデータオプションの実装
-     - ✓ **テスト基盤の改善**
-       - 一時ディレクトリを使用したテストの分離
-       - クリーンアップ処理の改善
-       - 全テストケースが正常に動作
-     - ✓ **テストカバレッジの拡大**
-       - 読み取り戦略のテスト（デフォルト/完全読み込み）
-       - メタデータオプションのテスト
-       - エラーケースのテスト
-     - ✓ **Phase 2 (読み取り戦略実装完了)**
-       - ✓ バイト範囲読み取り戦略
-         - ✓ 範囲指定読み取りの実装
-         - ✓ 範囲バリデーション
-         - ✓ エラーハンドリング
-         - ✓ テストケースの追加と改善
-       - ✓ 行範囲読み取り戦略
-         - ✓ 行範囲読み取り戦略の実装
-         - ✓ 範囲バリデーション
-         - ✓ エラーハンドリング
-         - ✓ テストケースの追加と改善
-       - パフォーマンス最適化 (次のフェーズ)
+1. read_file ツール機能強化
+   - ✓ Phase 1: 基本機能拡張完了
+     - ✓ ReadingStrategy型とインターフェースの追加
+     - ✓ extractTextFromFile関数の拡張
+     - ✓ デフォルト戦略と完全読み込み戦略実装
+     - ✓ メタデータサポートの追加
+   - ✓ Phase 2: 読み取り戦略の実装完了
+     - ✓ バイト範囲指定戦略
+     - ✓ 行範囲指定戦略
+     - ✓ 範囲バリデーション
+     - ✓ エラーハンドリング
+   - Current: ツールインターフェースの更新
+     - Cline.tsのread_fileツール実装更新
+     - system.tsのツール説明更新
+   - Next: パフォーマンス最適化 (Phase 3)
+     - ストリーミング処理の最適化
+     - パフォーマンステストの追加
+     - メモリ使用量の改善
 
 2. Documentation Updates
-   - Memory bank initialization
-   - System documentation
-   - User guides
-   - Contributing guidelines
+   - 設計ドキュメントの更新
+   - データフロー図の追加
+   - ユーザーガイドの整備
 
 ### Completed Features
-1. Tool Improvements
-   - read_file tool enhancement Phase 1
-     - ✓ 読み取り戦略の基本サポート
-     - ✓ メタデータ機能の追加
-     - ✓ テストインフラの改善
-     - ✓ エラーハンドリングの強化
-     - ✓ 全テストが成功
-   - read_file tool enhancement Phase 2
-     - ✓ バイト範囲読み取り戦略の実装
-     - ✓ 行範囲読み取り戦略の実装
-     - ✓ 範囲バリデーションと検証
-     - ✓ エラーハンドリングの強化
-     - ✓ テストケースの追加
+1. read_file基本機能拡張
+   - ✓ 読み取り戦略サポート
+     - デフォルト戦略
+     - 完全読み込み戦略
+     - バイト範囲指定戦略
+     - 行範囲指定戦略
+   - ✓ メタデータオプション
+   - ✓ エラーハンドリング強化
+   - ✓ テスト基盤の整備
 
 ### In Progress Features
-1. パフォーマンス最適化 (Phase 3)
-   - ストリーミング処理の最適化
-   - パフォーマンステストの追加
-   - メモリ使用量の最適化
+1. ツールインターフェースの更新
+   - Cline.tsの実装更新
+   - パラメータの追加と修正
+   - 戦略構築ロジックの実装
+   - 結果表示の改善
+
+2. system.tsの更新
+   - ツール説明の拡充
+   - パラメータドキュメントの更新
+   - 使用例の追加
 
 ## Future Development
 
 ### Planned Features
-1. Enhanced Tool Capabilities
-   - Additional development tools
-   - Improved auto-approval system
-   - Extended browser functionality
-   - Advanced file operations
+1. パフォーマンス最適化
+   - ストリーミング処理の実装
+   - メモリ使用量の最適化
+   - パフォーマンス計測機能
 
 2. Documentation and Testing
-   - Comprehensive test suite
-   - Improved error messages
-   - Extended documentation
-   - More code examples
+   - 包括的なテストスイート
+   - エラーメッセージの改善
+   - 開発者ドキュメントの拡充
 
 ### Future Considerations
-1. Performance Improvements
-   - Caching optimization
-   - Resource management
-     - Efficient use of LLM context window
-     - Gradual loading of large files
-     - Selective extraction of file content
-   - Response time reduction
-   - Memory usage optimization
-     - Introduction of streaming processing
-     - Memory consumption optimization
-     - Selection of dynamic processing methods
+1. 拡張機能の追加
+   - セマンティック分割戦略
+   - ファイル構造解析戦略
+   - カスタム戦略サポート
 
-2. User Experience
-   - Enhanced feedback system
-   - Improved error handling
-   - Better progress indicators
-   - More customization options
+2. ユーザーエクスペリエンス改善
+   - より直感的なパラメータ名
+   - 詳細な設定オプション
+   - エラーメッセージの改善
 
 ## Success Metrics
 1. Current Achievements
-   - #1 on OpenRouter
-   - Multi-language support
-   - Active community
-   - Stable core features
+   - ✓ 基本機能の実装完了
+   - ✓ 全テストケースの成功
+   - ✓ エラーハンドリングの改善
+   - ✓ コード品質の向上
 
 2. Monitoring Areas
-   - User feedback
-   - Issue reports
-   - Feature requests
-   - Community engagement
+   - パフォーマンス指標
+   - メモリ使用量
+   - エラー発生率
+   - ユーザーフィードバック
