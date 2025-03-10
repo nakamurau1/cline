@@ -47,6 +47,12 @@ export const toolParamNames = [
 	"question",
 	"response",
 	"result",
+	"strategy",
+	"start_line",
+	"end_line",
+	"start",
+	"end",
+	"include_metadata",
 ] as const
 
 export type ToolParamName = (typeof toolParamNames)[number]

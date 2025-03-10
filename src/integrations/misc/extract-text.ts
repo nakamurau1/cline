@@ -11,7 +11,7 @@ interface FileInfo {
 	path: string
 }
 
-type ReadingStrategy =
+export type ReadingStrategy =
 	| { type: "default" } // デフォルト戦略（閾値に基づく読み取り）
 	| { type: "complete" } // 全体読み込み
 	| { type: "byteRange"; start: number; end?: number } // バイト範囲指定
