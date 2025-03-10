@@ -81,28 +81,35 @@
 
 ### In Progress Features
 1. ツールインターフェースの更新
-   - Cline.tsの実装更新
-   - パラメータの追加と修正
-   - 戦略構築ロジックの実装
-   - 結果表示の改善
+   - Cline.tsのread_fileツール実装の更新
+     - 新しいパラメータの処理ロジックの追加
+     - 戦略オブジェクトの構築処理
+     - ReadResultの全情報を活用した結果表示
+   - 現状の実装: 基本的な実装で、ReadResult.contentのみを使用
+     ```typescript
+     const result = await extractTextFromFile(absolutePath)
+     pushToolResult(result.content)
+     ```
 
 2. system.tsの更新
-   - ツール説明の拡充
-   - パラメータドキュメントの更新
-   - 使用例の追加
+   - ツール説明の拡充（新パラメータを含む）
+   - 各読み取り戦略の詳細な説明
+   - 使用例の更新と追加
 
 ## Future Development
 
 ### Planned Features
-1. パフォーマンス最適化
+1. パフォーマンス最適化（Phase 3）
    - ストリーミング処理の実装
    - メモリ使用量の最適化
    - パフォーマンス計測機能
+   - 大きなファイルの効率的な処理
 
 2. Documentation and Testing
-   - 包括的なテストスイート
+   - 包括的なテストスイート（特に新パラメータ対応）
    - エラーメッセージの改善
    - 開発者ドキュメントの拡充
+   - ユーザーガイドの更新（新機能の説明）
 
 ### Future Considerations
 1. 拡張機能の追加
@@ -121,9 +128,12 @@
    - ✓ 全テストケースの成功
    - ✓ エラーハンドリングの改善
    - ✓ コード品質の向上
+   - ✓ extractTextFromFile関数の完全実装
 
 2. Monitoring Areas
    - パフォーマンス指標
-   - メモリ使用量
+     - 各戦略のファイルサイズ別処理時間
+     - メモリ使用量の測定
    - エラー発生率
    - ユーザーフィードバック
+   - 新機能の使用状況
