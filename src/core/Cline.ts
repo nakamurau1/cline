@@ -13,7 +13,7 @@ import { OpenRouterHandler } from "../api/providers/openrouter"
 import CheckpointTracker from "../integrations/checkpoints/CheckpointTracker"
 import { DIFF_VIEW_URI_SCHEME, DiffViewProvider } from "../integrations/editor/DiffViewProvider"
 import { formatContentBlockToMarkdown } from "../integrations/misc/export-markdown"
-import { extractTextFromFile } from "../integrations/misc/extract-text"
+import { extractTextFromFile, ReadingStrategy } from "../integrations/misc/extract-text"
 import { showSystemNotification } from "../integrations/notifications"
 import { TerminalManager } from "../integrations/terminal/TerminalManager"
 import { BrowserSession } from "../services/browser/BrowserSession"
@@ -1914,16 +1914,26 @@ export class Cline {
 					}
 					case "read_file": {
 						const relPath: string | undefined = block.params.path
+						const strategyType: string | undefined = block.params.strategy
+						const startLine: string | undefined = block.params.start_line
+						const endLine: string | undefined = block.params.end_line
+						const start: string | undefined = block.params.start
+						const end: string | undefined = block.params.end
+						const includeMetadataRaw: string | undefined = block.params.include_metadata
+						const includeMetadata = includeMetadataRaw?.toLowerCase() === "true"
+
 						const sharedMessageProps: ClineSayTool = {
 							tool: "readFile",
 							path: getReadablePath(cwd, removeClosingTag("path", relPath)),
 						}
+
 						try {
 							if (block.partial) {
 								const partialMessage = JSON.stringify({
 									...sharedMessageProps,
 									content: undefined,
 								} satisfies ClineSayTool)
+
 								if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
 									await this.say("tool", partialMessage, undefined, block.partial)
@@ -1931,12 +1941,12 @@ export class Cline {
 									this.removeLastPartialMessageIfExistsWithType("say", "tool")
 									await this.ask("tool", partialMessage, block.partial).catch(() => {})
 								}
+
 								break
 							} else {
 								if (!relPath) {
 									this.consecutiveMistakeCount++
 									pushToolResult(await this.sayAndCreateMissingParamError("read_file", "path"))
-
 									break
 								}
 
@@ -1944,7 +1954,6 @@ export class Cline {
 								if (!accessAllowed) {
 									await this.say("clineignore_error", relPath)
 									pushToolResult(formatResponse.toolError(formatResponse.clineIgnoreError(relPath)))
-
 									break
 								}
 
@@ -1954,9 +1963,10 @@ export class Cline {
 									...sharedMessageProps,
 									content: absolutePath,
 								} satisfies ClineSayTool)
+
 								if (this.shouldAutoApproveTool(block.name)) {
 									this.removeLastPartialMessageIfExistsWithType("ask", "tool")
-									await this.say("tool", completeMessage, undefined, false) // need to be sending partialValue bool, since undefined has its own purpose in that the message is treated neither as a partial or completion of a partial, but as a single complete message
+									await this.say("tool", completeMessage, undefined, false)
 									this.consecutiveAutoApprovedRequestsCount++
 									telemetryService.captureToolUsage(this.taskId, block.name, true, true)
 								} else {
@@ -1971,15 +1981,98 @@ export class Cline {
 									}
 									telemetryService.captureToolUsage(this.taskId, block.name, false, true)
 								}
-								// now execute the tool like normal
-								const content = await extractTextFromFile(absolutePath)
-								pushToolResult(content)
 
+								// 読み取り戦略の構築
+								let strategy: ReadingStrategy = { type: "default" } // デフォルト戦略
+
+								if (strategyType) {
+									switch (strategyType.toLowerCase()) {
+										case "complete":
+											strategy = { type: "complete" }
+											break
+										case "byterange":
+											if (start) {
+												strategy = {
+													type: "byteRange",
+													start: parseInt(start, 10),
+													...(end ? { end: parseInt(end, 10) } : {}),
+												}
+											} else {
+												// startがない場合はエラーメッセージを表示
+												pushToolResult(
+													formatResponse.toolError(
+														"Error: The 'start' parameter is required when using 'byteRange' strategy.",
+													),
+												)
+												break
+											}
+											break
+										case "linerange":
+											if (startLine) {
+												strategy = {
+													type: "lineRange",
+													startLine: parseInt(startLine, 10),
+													...(endLine ? { endLine: parseInt(endLine, 10) } : {}),
+												}
+											} else {
+												// startLineがない場合はエラーメッセージを表示
+												pushToolResult(
+													formatResponse.toolError(
+														"Error: The 'start_line' parameter is required when using 'lineRange' strategy.",
+													),
+												)
+												break
+											}
+											break
+										default:
+											// 無効な戦略タイプの場合はデフォルト戦略を使用
+											break
+									}
+								}
+
+								// extractTextFromFileにオプションを渡す
+								const options = {
+									strategy,
+									includeMetadata,
+								}
+
+								const result = await extractTextFromFile(absolutePath, options)
+
+								// 結果の整形と表示
+								// 基本的な内容を表示
+								let response = result.content
+
+								// 追加情報の表示（メタデータフラグがtrueの場合、または切り捨てられた場合）
+								if (includeMetadata || result.isTruncated) {
+									response += "\n\n--- File Information ---\n"
+									if (result.fileInfo) {
+										response += `Path: ${result.fileInfo.path}\n`
+										response += `Size: ${result.fileInfo.size} bytes\n`
+										response += `Type: ${result.fileInfo.type}\n`
+									}
+
+									if (result.isTruncated) {
+										response += `Content Truncated: Yes\n`
+										if (result.remainingSize !== undefined) {
+											response += `Remaining Size: ${result.remainingSize} bytes\n`
+										}
+									}
+
+									response += `Applied Strategy: ${result.appliedStrategy.type}\n`
+
+									if (includeMetadata && result.metadata) {
+										response += "\n--- Metadata ---\n"
+										for (const [key, value] of Object.entries(result.metadata)) {
+											response += `${key}: ${JSON.stringify(value)}\n`
+										}
+									}
+								}
+
+								pushToolResult(response)
 								break
 							}
 						} catch (error) {
 							await handleError("reading file", error)
-
 							break
 						}
 					}
@@ -2935,7 +3028,7 @@ export class Cline {
 		}
 
 		/*
-		Seeing out of bounds is fine, it means that the next too call is being built up and ready to add to assistantMessageContent to present. 
+		Seeing out of bounds is fine, it means that the next too call is being built up and ready to add to assistantMessageContent to present.
 		When you see the UI inactive during this, it means that a tool is breaking without presenting any UI. For example the write_to_file tool was breaking when relpath was undefined, and for invalid relpath it never presented UI.
 		*/
 		this.presentAssistantMessageLocked = false // this needs to be placed here, if not then calling this.presentAssistantMessage below would fail (sometimes) since it's locked
