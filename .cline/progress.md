@@ -55,10 +55,10 @@
      - ✓ 行範囲指定戦略
      - ✓ 範囲バリデーション
      - ✓ エラーハンドリング
-   - Current: ツールインターフェースの更新
-     - Cline.tsのread_fileツール実装更新
-     - system.tsのツール説明更新
-   - Next: パフォーマンス最適化 (Phase 3)
+   - ✓ Phase 3: ツールインターフェースの更新
+     - ✓ Cline.tsのread_fileツール実装更新
+     - Current: system.tsのツール説明更新
+   - Next: パフォーマンス最適化 (Phase 4)
      - ストリーミング処理の最適化
      - パフォーマンステストの追加
      - メモリ使用量の改善
@@ -78,20 +78,10 @@
    - ✓ メタデータオプション
    - ✓ エラーハンドリング強化
    - ✓ テスト基盤の整備
+   - ✓ Cline.tsのread_fileツール実装更新
 
 ### In Progress Features
-1. ツールインターフェースの更新
-   - Cline.tsのread_fileツール実装の更新
-     - 新しいパラメータの処理ロジックの追加
-     - 戦略オブジェクトの構築処理
-     - ReadResultの全情報を活用した結果表示
-   - 現状の実装: 基本的な実装で、ReadResult.contentのみを使用
-     ```typescript
-     const result = await extractTextFromFile(absolutePath)
-     pushToolResult(result.content)
-     ```
-
-2. system.tsの更新
+1. system.tsの更新
    - ツール説明の拡充（新パラメータを含む）
    - 各読み取り戦略の詳細な説明
    - 使用例の更新と追加
@@ -99,7 +89,7 @@
 ## Future Development
 
 ### Planned Features
-1. パフォーマンス最適化（Phase 3）
+1. パフォーマンス最適化（Phase 4）
    - ストリーミング処理の実装
    - メモリ使用量の最適化
    - パフォーマンス計測機能
@@ -129,6 +119,7 @@
    - ✓ エラーハンドリングの改善
    - ✓ コード品質の向上
    - ✓ extractTextFromFile関数の完全実装
+   - ✓ Cline.tsのread_fileツール実装更新
 
 2. Monitoring Areas
    - パフォーマンス指標

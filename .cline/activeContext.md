@@ -26,16 +26,16 @@
        - ✓ 範囲バリデーション
        - ✓ エラーハンドリング
        - ✓ テストケース追加
-
-2. Current Focus
-   - Cline.ts の read_file ツール実装の更新
-     - 新しいパラメータの追加
+   - ✓ Phase 3: Cline.ts の read_file ツール実装更新完了
+     - ✓ 新しいパラメータの追加
        - strategy: 読み取り戦略の指定
        - start_line/end_line: 行範囲指定用
        - start/end: バイト範囲指定用
        - include_metadata: メタデータ取得フラグ
-     - 戦略オブジェクトの構築ロジック
-     - 結果の整形と表示機能
+     - ✓ 戦略オブジェクトの構築ロジック
+     - ✓ 結果の整形と表示機能
+
+2. Current Focus
    - system.ts の read_file ツール説明の更新
      - 基本説明の拡充
      - 新パラメータの説明追加
@@ -48,7 +48,8 @@
    - ✓ エラーハンドリングの強化
    - ✓ バイト範囲と行範囲戦略の実装
    - ✓ extractTextFromFile関数の完全実装
-   - → 次: Cline.tsとsystem.tsの更新
+   - ✓ Cline.ts の read_file ツール実装更新
+   - → 次: system.tsの更新
 
 ## Recent Changes
 - ✓ 全ての読み取り戦略の実装完了
@@ -69,13 +70,12 @@
 - ✓ 実装状況の確認と調査
   - 現在のCline.tsのread_file実装が基本的なものであることを確認
   - extractTextFromFileから返されるReadResultの中の一部情報のみが使用されている
+- ✓ Cline.ts の read_file ツール実装更新
+  - 新しいパラメータとロジックの実装
 
 ## Next Steps
-1. ツール実装の更新
-   - Cline.ts の read_file ツール実装の更新
-     - 新しいパラメータに基づいてReadingStrategyを構築する処理の追加
-     - ReadResultの全ての情報（ファイル情報、メタデータなど）を活用した結果表示の実装
-   - system.ts のツール説明の更新
+1. ツール説明の更新
+   - system.ts の read_file ツール説明の更新
      - 新しいパラメータの詳細説明の追加
      - 各戦略の使用例の追加
    - 新機能のテスト追加
